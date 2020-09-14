@@ -19,6 +19,14 @@ Examples
        print('steady.now():', steady_now())
        print('DateTime:    ', DateTime.from_time(system_now()))
 
+.. code-block:: text
+
+   $ mys run
+   system.now(): Time(seconds=1600112736, nanoseconds=5209582)
+   steady.now(): Time(seconds=174436, nanoseconds=359)
+   DateTime:     DateTime(year=2020, month=9, day=14, hour=19, minute=1, second=34)
+
+
 .. |buildstatus| image:: https://travis-ci.com/eerimoq/mys-time.svg?branch=master
 .. _buildstatus: https://travis-ci.com/eerimoq/mys-time
 
