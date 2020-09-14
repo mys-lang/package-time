@@ -1,0 +1,76 @@
+class Time:
+    """Time in seconds and nanoseconds.
+
+    """
+
+    def __init__(self,
+                 seconds: int,
+                 nanoseconds: int):
+        self.seconds: int = seconds
+        self.nanoseconds: int = nanoseconds
+
+class DateTime:
+    """Date and time.
+
+    """
+
+    def __init__(self,
+                 year: int,
+                 month: int,
+                 day: int,
+                 hour: int,
+                 minute: int,
+                 second: int):
+        self.year: int = year
+        self.month: int = month
+        self.day: int = day
+        self.hour: int = hour
+        self.minute: int = minute
+        self.second: int = second
+
+    def from_time(time: Time) -> DateTime:
+        """Create a DateTime object from given time.
+
+        """
+
+        return DateTime(0, 0, 0, 0, 0, 0)
+
+    def to_time(self) -> Time:
+        """Create a Time object from this date and time.
+
+        """
+
+        return Time(0, 0)
+
+@test
+def test_time():
+    time = Time(5, 1)
+    assert_eq(time.seconds, 5)
+    assert_eq(time.nanoseconds, 1)
+
+@test
+def test_datetime_new():
+    datetime = DateTime(2020, 9, 14, 19, 1, 34)
+    assert_eq(datetime.year, 2020)
+    assert_eq(datetime.month, 9)
+    assert_eq(datetime.day, 14)
+    assert_eq(datetime.hour, 19)
+    assert_eq(datetime.minute, 1)
+    assert_eq(datetime.second, 34)
+
+@test
+def test_datetime_from_time():
+    datetime = DateTime.from_time(Time(1600000000, 0))
+    assert_eq(datetime.year, 2020)
+    assert_eq(datetime.month, 9)
+    assert_eq(datetime.day, 14)
+    assert_eq(datetime.hour, 19)
+    assert_eq(datetime.minute, 1)
+    assert_eq(datetime.second, 34)
+
+@test
+def test_datetime_to_time():
+    datetime = DateTime(2020, 9, 14, 19, 1, 34)
+    time = datetime.to_time()
+    assert_eq(time.seconds, 1600000000)
+    assert_eq(time.nanoseconds, 0)

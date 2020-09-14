@@ -1,0 +1,26 @@
+from time import Time
+
+'''mys-embedded-c++-before-namespace
+#include <ctime>
+'''
+
+def now() -> Time:
+    """A steady clock that is not affected by discontinuous jumps in the
+    system time.
+
+    """
+
+    '''mys-embedded-c++
+    struct timespec now;
+    
+    if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
+        throw Exception("clock_gettime(CLOCK_MONOTONIC) failed");
+    }
+    '''
+
+    return Time(now.tv_secs, now.tv_nsecs)
+
+@test
+def test_now():
+    assert_ge(now().seconds, 0)
+    assert_ge(now().nanoseconds, 0)
