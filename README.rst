@@ -3,7 +3,7 @@
 Time
 ====
 
-Date and time facilities in the `Mys programming language`_.
+Date and time in the `Mys programming language`_.
 
 Examples
 ========
