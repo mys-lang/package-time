@@ -5,14 +5,16 @@ from . import Time
 '''
 
 def now() -> Time:
-    """System-wide clock that measures real (i.e. wall-clock) time. This
-    clock is affected by discontinuous jumps.
+    """Get the current time of system clock. This is commonly referred to
+    as Unix time.
+
+    This clock is affected by discontinuous jumps.
 
     """
-              
+
     '''mys-embedded-c++
     struct timespec now;
-    
+
     if (clock_gettime(CLOCK_REALTIME, &now) != 0) {
         throw Exception("clock_gettime(CLOCK_REALTIME) failed");
     }

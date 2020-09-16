@@ -9,6 +9,58 @@ class Time:
         self.seconds: int = seconds
         self.nanoseconds: int = nanoseconds
 
+    def __eq__(self, other: Time) -> bool:
+        return (self.seconds == other.seconds
+                and self.nanoseconds == other.nanoseconds)
+
+    def __ne__(self, other: Time) -> bool:
+        return not (self == other)
+
+    def __gt__(self, other: Time) -> bool:
+        if self.seconds > other.seconds:
+            return True
+        elif self.seconds == other.seconds:
+            return self.nanoseconds > other.nanoseconds
+        else:
+            return False
+
+    def __ge__(self, other: Time) -> bool:
+        return self > other or self == other
+
+    def __lt__(self, other: Time) -> bool:
+        return not (self >= other)
+
+    def __le__(self, other: Time) -> bool:
+        return not (self > other)
+
+    def __iadd__(self, other: Time):
+        self.seconds += other.seconds
+        self.nanoseconds += other.nanoseconds
+
+        if self.nanoseconds >= 1_000_000_000:
+            self.seconds += 1
+            self.nanoseconds -= 1_000_000_000
+
+    def __isub__(self, other: Time):
+        self.seconds -= other.seconds
+        self.nanoseconds -= other.nanoseconds
+
+        if self.nanoseconds < 0:
+            self.seconds -= 1
+            self.nanoseconds += 1_000_000_000
+
+    def __add__(self, other: Time) -> Time:
+        result = Time(self.seconds, self.nanoseconds)
+        result += other
+
+        return result
+
+    def __sub__(self, other: Time) -> Time:
+        result = Time(self.seconds, self.nanoseconds)
+        result -= other
+
+        return result
+
 class DateTime:
     """Date and time.
 
@@ -29,14 +81,30 @@ class DateTime:
         self.second: int = second
 
     def from_time(time: Time) -> DateTime:
-        """Create a DateTime object from given time.
+        """Create a DateTime object from given UTC time.
 
         """
 
-        return DateTime(0, 0, 0, 0, 0, 0)
+        '''mys-embedded-c++
+        time_t t;
+        struct tm tm;
+
+        t = time.seconds;
+
+        if (std::gmtime_s(&t, &tm) == NULL) {
+            throw ValueError("gmtime");
+        }
+        '''
+
+        return DateTime(tm.tm_year,
+                        tm.tm_month,
+                        tm.tm_mday,
+                        tm.tm_hour,
+                        tm.tm_minute,
+                        tm.tm_second)
 
     def to_time(self) -> Time:
-        """Create a Time object from this date and time.
+        """Create a Time object in UTC from this date and time.
 
         """
 

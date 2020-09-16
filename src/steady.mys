@@ -5,8 +5,9 @@ from . import Time
 '''
 
 def now() -> Time:
-    """A steady clock that is not affected by discontinuous jumps in the
-    system time.
+    """Get the current time of steady (monotonic) clock.
+
+    This clock is not affected by discontinuous jumps.
 
     """
 
