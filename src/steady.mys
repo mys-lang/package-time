@@ -1,20 +1,20 @@
-from .. import Time
+from . import Time
 
 '''mys-embedded-c++-before-namespace
 #include <ctime>
 '''
 
 def now() -> Time:
-    """System-wide clock that measures real (i.e. wall-clock) time. This
-    clock is affected by discontinuous jumps.
+    """A steady clock that is not affected by discontinuous jumps in the
+    system time.
 
     """
-              
+
     '''mys-embedded-c++
     struct timespec now;
     
-    if (clock_gettime(CLOCK_REALTIME, &now) != 0) {
-        throw Exception("clock_gettime(CLOCK_REALTIME) failed");
+    if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
+        throw Exception("clock_gettime(CLOCK_MONOTONIC) failed");
     }
     '''
 
