@@ -3,18 +3,12 @@ class Time:
 
     """
 
-    def __init__(self,
-                 seconds: int,
-                 nanoseconds: int):
-        self.seconds: int = seconds
-        self.nanoseconds: int = nanoseconds
-
+    seconds: i64
+    nanoseconds: i32
+    
     def __eq__(self, other: Time) -> bool:
         return (self.seconds == other.seconds
                 and self.nanoseconds == other.nanoseconds)
-
-    def __ne__(self, other: Time) -> bool:
-        return not (self == other)
 
     def __gt__(self, other: Time) -> bool:
         if self.seconds > other.seconds:
@@ -23,15 +17,6 @@ class Time:
             return self.nanoseconds > other.nanoseconds
         else:
             return False
-
-    def __ge__(self, other: Time) -> bool:
-        return self > other or self == other
-
-    def __lt__(self, other: Time) -> bool:
-        return not (self >= other)
-
-    def __le__(self, other: Time) -> bool:
-        return not (self > other)
 
     def __iadd__(self, other: Time):
         self.seconds += other.seconds
@@ -49,38 +34,19 @@ class Time:
             self.seconds -= 1
             self.nanoseconds += 1_000_000_000
 
-    def __add__(self, other: Time) -> Time:
-        result = Time(self.seconds, self.nanoseconds)
-        result += other
-
-        return result
-
-    def __sub__(self, other: Time) -> Time:
-        result = Time(self.seconds, self.nanoseconds)
-        result -= other
-
-        return result
-
 class DateTime:
     """Date and time.
 
     """
 
-    def __init__(self,
-                 year: int,
-                 month: int,
-                 day: int,
-                 hour: int,
-                 minute: int,
-                 second: int):
-        self.year: int = year
-        self.month: int = month
-        self.day: int = day
-        self.hour: int = hour
-        self.minute: int = minute
-        self.second: int = second
-
-    def from_time(time: Time) -> DateTime:
+    year: i32
+    month: u8
+    day: u8
+    hour: u8
+    minute: u8
+    second: u8
+        
+    def __init__(self, time: Time):
         """Create a DateTime object from given UTC time.
 
         """
@@ -96,12 +62,12 @@ class DateTime:
         }
         '''
 
-        return DateTime(tm.tm_year,
-                        tm.tm_month,
-                        tm.tm_mday,
-                        tm.tm_hour,
-                        tm.tm_minute,
-                        tm.tm_second)
+        self.__init__(tm.tm_year,
+                      tm.tm_month,
+                      tm.tm_mday,
+                      tm.tm_hour,
+                      tm.tm_minute,
+                      tm.tm_second)
 
     def to_time(self) -> Time:
         """Create a Time object in UTC from this date and time.
@@ -128,7 +94,7 @@ def test_datetime_new():
 
 @test
 def test_datetime_from_time():
-    datetime = DateTime.from_time(Time(1600000000, 0))
+    datetime = DateTime(Time(1600000000, 0))
     assert_eq(datetime.year, 2020)
     assert_eq(datetime.month, 9)
     assert_eq(datetime.day, 14)
