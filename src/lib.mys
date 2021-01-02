@@ -5,12 +5,12 @@ class Time:
 
     seconds: i64
     nanoseconds: i32
-    
-    def __eq__(self, other: Time) -> bool:
+
+    def ==(self, other: Time) -> bool:
         return (self.seconds == other.seconds
                 and self.nanoseconds == other.nanoseconds)
 
-    def __gt__(self, other: Time) -> bool:
+    def >(self, other: Time) -> bool:
         if self.seconds > other.seconds:
             return True
         elif self.seconds == other.seconds:
@@ -18,7 +18,7 @@ class Time:
         else:
             return False
 
-    def __iadd__(self, other: Time):
+    def +=(self, other: Time):
         self.seconds += other.seconds
         self.nanoseconds += other.nanoseconds
 
@@ -26,7 +26,7 @@ class Time:
             self.seconds += 1
             self.nanoseconds -= 1_000_000_000
 
-    def __isub__(self, other: Time):
+    def -=(self, other: Time):
         self.seconds -= other.seconds
         self.nanoseconds -= other.nanoseconds
 
@@ -40,12 +40,12 @@ class DateTime:
     """
 
     year: i32
-    month: u8
-    day: u8
-    hour: u8
-    minute: u8
-    second: u8
-        
+    month: i8
+    day: i8
+    hour: i8
+    minute: i8
+    second: i8
+
     def __init__(self, time: Time):
         """Create a DateTime object from given UTC time.
 
@@ -94,7 +94,7 @@ def test_datetime_new():
 
 @test
 def test_datetime_from_time():
-    datetime = DateTime(Time(1600000000, 0))
+    datetime = DateTime.from_time(Time(1600000000, 0))
     assert_eq(datetime.year, 2020)
     assert_eq(datetime.month, 9)
     assert_eq(datetime.day, 14)

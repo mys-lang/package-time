@@ -1,8 +1,8 @@
 from . import Time
 
-'''mys-embedded-c++-before-namespace
+"""mys-embedded-c++-before-namespace
 #include <ctime>
-'''
+"""
 
 def now() -> Time:
     """Get the current time of system clock. This is commonly referred to
@@ -12,13 +12,13 @@ def now() -> Time:
 
     """
 
-    '''mys-embedded-c++
+    """mys-embedded-c++
     struct timespec now;
 
     if (clock_gettime(CLOCK_REALTIME, &now) != 0) {
         throw Exception("clock_gettime(CLOCK_REALTIME) failed");
     }
-    '''
+    """
 
     return Time(now.tv_secs, now.tv_nsecs)
 

@@ -3,6 +3,6 @@ from .steady import now as steady_now
 from . import DateTime
 
 def main():
-    print('system.now():', system_now())
-    print('steady.now():', steady_now())
-    print('DateTime:    ', DateTime.from_time(system_now()))
+    print("system.now():", system_now())
+    print("steady.now():", steady_now())
+    print("DateTime:    ", DateTime.from_time(system_now()))

@@ -1,5 +1,3 @@
-|buildstatus|_
-
 Time
 ====
 
@@ -26,8 +24,4 @@ Examples
    steady.now(): Time(seconds=174436, nanoseconds=359)
    DateTime:     DateTime(year=2020, month=9, day=14, hour=19, minute=1, second=34)
 
-
-.. |buildstatus| image:: https://travis-ci.com/eerimoq/mys-time.svg?branch=master
-.. _buildstatus: https://travis-ci.com/eerimoq/mys-time
-
-.. _Mys programming language: https://github.com/eerimoq/mys
+.. _Mys programming language: https://github.com/mys-lang/mys
