@@ -1,3 +1,10 @@
+c"""source-before-namespace
+#include <ctime>
+"""
+
+class TimeError(Error):
+    message: string
+
 class Time:
     """Time in seconds and nanoseconds.
 
@@ -6,11 +13,11 @@ class Time:
     seconds: i64
     nanoseconds: i32
 
-    def ==(self, other: Time) -> bool:
+    def __eq__(self, other: Time) -> bool:
         return (self.seconds == other.seconds
                 and self.nanoseconds == other.nanoseconds)
 
-    def >(self, other: Time) -> bool:
+    def __gt__(self, other: Time) -> bool:
         if self.seconds > other.seconds:
             return True
         elif self.seconds == other.seconds:
@@ -18,7 +25,7 @@ class Time:
         else:
             return False
 
-    def +=(self, other: Time):
+    def __iadd__(self, other: Time):
         self.seconds += other.seconds
         self.nanoseconds += other.nanoseconds
 
@@ -26,7 +33,7 @@ class Time:
             self.seconds += 1
             self.nanoseconds -= 1_000_000_000
 
-    def -=(self, other: Time):
+    def __isub__(self, other: Time):
         self.seconds -= other.seconds
         self.nanoseconds -= other.nanoseconds
 
@@ -51,60 +58,60 @@ class DateTime:
 
         """
 
-        '''mys-embedded-c++
-        time_t t;
-        struct tm tm;
+        ok = False
 
-        t = time.seconds;
+        c"""
+        std::time_t t;
+        std::tm *tm;
 
-        if (std::gmtime_s(&t, &tm) == NULL) {
-            throw ValueError("gmtime");
+        t = time->seconds;
+        tm = std::gmtime(&t);
+
+        if (tm != NULL) {
+            year = 1900 + tm->tm_year;
+            month = tm->tm_mon + 1;
+            day = tm->tm_mday;
+            hour = tm->tm_hour + 1;
+            minute = tm->tm_min;
+            second = tm->tm_sec;
+            ok = true;
         }
-        '''
+        """
 
-        self.__init__(tm.tm_year,
-                      tm.tm_month,
-                      tm.tm_mday,
-                      tm.tm_hour,
-                      tm.tm_minute,
-                      tm.tm_second)
+        if not ok:
+            raise TimeError("Time convertion failed.")
 
     def to_time(self) -> Time:
         """Create a Time object in UTC from this date and time.
 
         """
 
-        return Time(0, 0)
+        raise NotImplementedError()
 
 @test
 def test_time():
     time = Time(5, 1)
-    assert_eq(time.seconds, 5)
-    assert_eq(time.nanoseconds, 1)
+    assert time.seconds == 5
+    assert time.nanoseconds == 1
 
 @test
-def test_datetime_new():
-    datetime = DateTime(2020, 9, 14, 19, 1, 34)
-    assert_eq(datetime.year, 2020)
-    assert_eq(datetime.month, 9)
-    assert_eq(datetime.day, 14)
-    assert_eq(datetime.hour, 19)
-    assert_eq(datetime.minute, 1)
-    assert_eq(datetime.second, 34)
+def test_datetime_from_time_epoch():
+    datetime = DateTime(Time(0, 0))
+    print(datetime)
+    assert datetime.year == 1970
+    assert datetime.month == 1
+    assert datetime.day == 1
+    assert datetime.hour == 1
+    assert datetime.minute == 0
+    assert datetime.second == 0
 
 @test
-def test_datetime_from_time():
-    datetime = DateTime.from_time(Time(1600000000, 0))
-    assert_eq(datetime.year, 2020)
-    assert_eq(datetime.month, 9)
-    assert_eq(datetime.day, 14)
-    assert_eq(datetime.hour, 19)
-    assert_eq(datetime.minute, 1)
-    assert_eq(datetime.second, 34)
-
-@test
-def test_datetime_to_time():
-    datetime = DateTime(2020, 9, 14, 19, 1, 34)
-    time = datetime.to_time()
-    assert_eq(time.seconds, 1600000000)
-    assert_eq(time.nanoseconds, 0)
+def test_datetime_from_time_now():
+    datetime = DateTime(Time(1615130879, 0))
+    print(datetime)
+    assert datetime.year == 2021
+    assert datetime.month == 3
+    assert datetime.day == 7
+    assert datetime.hour == 16
+    assert datetime.minute == 27
+    assert datetime.second == 59

@@ -13,15 +13,15 @@ Examples
    from time import DateTime
 
    def main():
-       print('system.now():', system_now())
-       print('steady.now():', steady_now())
-       print('DateTime:    ', DateTime.from_time(system_now()))
+       print("system_now():", system_now())
+       print("steady_now():", steady_now())
+       print("DateTime:    ", DateTime(system_now()))
 
 .. code-block:: text
 
    $ mys run
-   system.now(): Time(seconds=1600112736, nanoseconds=5209582)
-   steady.now(): Time(seconds=174436, nanoseconds=359)
-   DateTime:     DateTime(year=2020, month=9, day=14, hour=19, minute=1, second=34)
+   system_now(): Time(seconds=1615134755, nanoseconds=215459607)
+   steady_now(): Time(seconds=199755, nanoseconds=6931116)
+   DateTime:     DateTime(year=2021, month=3, day=7, hour=17, minute=32, second=35)
 
 .. _Mys programming language: https://github.com/mys-lang/mys

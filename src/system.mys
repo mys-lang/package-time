@@ -1,6 +1,7 @@
 from . import Time
+from . import TimeError
 
-"""mys-embedded-c++-before-namespace
+c"""source-before-namespace
 #include <ctime>
 """
 
@@ -12,17 +13,27 @@ def now() -> Time:
 
     """
 
-    """mys-embedded-c++
+    secs = 0
+    nsecs: i32 = 0
+    ok = True
+
+    c"""
     struct timespec now;
 
     if (clock_gettime(CLOCK_REALTIME, &now) != 0) {
-        throw Exception("clock_gettime(CLOCK_REALTIME) failed");
+        ok = false;
     }
+
+    secs = now.tv_sec;
+    nsecs = now.tv_nsec;
     """
 
-    return Time(now.tv_secs, now.tv_nsecs)
+    if not ok:
+        raise TimeError("Failed to get time.")
+
+    return Time(secs, nsecs)
 
 @test
 def test_now():
-    assert_ge(now().seconds, 0)
-    assert_ge(now().nanoseconds, 0)
+    assert now().seconds >= 0
+    assert now().nanoseconds >= 0
