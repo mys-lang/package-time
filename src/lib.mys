@@ -76,6 +76,11 @@ class DateTime:
 
         raise NotImplementedError()
 
+    def __str__(self) -> string:
+        # ToDo: Fixed width when format string support it (or workaround).
+        return (f"{self.year}-{self.month}-{self.day} "
+                f"{self.hour}:{self.minute}:{self.second}")
+
 @test
 def test_time():
     time = Time(5, 1)
@@ -133,3 +138,8 @@ def test_subtract_times():
     t -= Time(0, 999_000_001)
     assert t.seconds == 7
     assert t.nanoseconds == 999_999_999
+
+@test
+def test_datetime_string():
+    dt = DateTime(Time(182600000, 0))
+    assert str(dt) == "1975-10-15 11:13:20"
