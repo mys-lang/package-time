@@ -13,18 +13,6 @@ class Time:
     seconds: i64
     nanoseconds: i32
 
-    def __eq__(self, other: Time) -> bool:
-        return (self.seconds == other.seconds
-                and self.nanoseconds == other.nanoseconds)
-
-    def __gt__(self, other: Time) -> bool:
-        if self.seconds > other.seconds:
-            return True
-        elif self.seconds == other.seconds:
-            return self.nanoseconds > other.nanoseconds
-        else:
-            return False
-
     def __iadd__(self, other: Time):
         self.seconds += other.seconds
         self.nanoseconds += other.nanoseconds
@@ -97,7 +85,6 @@ def test_time():
 @test
 def test_datetime_from_time_epoch():
     datetime = DateTime(Time(0, 0))
-    print(datetime)
     assert datetime.year == 1970
     assert datetime.month == 1
     assert datetime.day == 1
@@ -108,10 +95,41 @@ def test_datetime_from_time_epoch():
 @test
 def test_datetime_from_time_now():
     datetime = DateTime(Time(1615130879, 0))
-    print(datetime)
     assert datetime.year == 2021
     assert datetime.month == 3
     assert datetime.day == 7
     assert datetime.hour == 16
     assert datetime.minute == 27
     assert datetime.second == 59
+
+@test
+def test_add_times():
+    t = Time(10, 0)
+
+    t += Time(1, 0)
+    assert t.seconds == 11
+    assert t.nanoseconds == 0
+
+    t += Time(0, 1_000_000)
+    assert t.seconds == 11
+    assert t.nanoseconds == 1_000_000
+
+    t += Time(0, 999_000_001)
+    assert t.seconds == 12
+    assert t.nanoseconds == 1
+
+@test
+def test_subtract_times():
+    t = Time(10, 0)
+
+    t -= Time(1, 0)
+    assert t.seconds == 9
+    assert t.nanoseconds == 0
+
+    t -= Time(0, 1_000_000)
+    assert t.seconds == 8
+    assert t.nanoseconds == 999_000_000
+
+    t -= Time(0, 999_000_001)
+    assert t.seconds == 7
+    assert t.nanoseconds == 999_999_999
