@@ -59,7 +59,7 @@ class DateTime:
             year = 1900 + tm->tm_year;
             month = tm->tm_mon + 1;
             day = tm->tm_mday;
-            hour = tm->tm_hour + 1;
+            hour = tm->tm_hour;
             minute = tm->tm_min;
             second = tm->tm_sec;
             ok = true;
@@ -93,7 +93,7 @@ def test_datetime_from_time_epoch():
     assert datetime.year == 1970
     assert datetime.month == 1
     assert datetime.day == 1
-    assert datetime.hour == 1
+    assert datetime.hour == 0
     assert datetime.minute == 0
     assert datetime.second == 0
 
@@ -103,7 +103,7 @@ def test_datetime_from_time_now():
     assert datetime.year == 2021
     assert datetime.month == 3
     assert datetime.day == 7
-    assert datetime.hour == 16
+    assert datetime.hour == 15
     assert datetime.minute == 27
     assert datetime.second == 59
 
@@ -142,4 +142,10 @@ def test_subtract_times():
 @test
 def test_datetime_string():
     dt = DateTime(Time(182600000, 0))
-    assert str(dt) == "1975-10-15 11:13:20"
+    assert str(dt) == "1975-10-15 10:13:20"
+
+    dt = DateTime(Time(0, 0))
+    assert str(dt) == "1970-1-1 0:0:0"
+
+    dt = DateTime(Time(-1, 0))
+    assert str(dt) == "1969-12-31 23:59:59"
