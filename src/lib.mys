@@ -74,7 +74,31 @@ class DateTime:
 
         """
 
-        raise NotImplementedError()
+        time = Time(0, 0)
+        ok = False
+
+        c"""
+        struct tm tm;
+        tm.tm_year = year - 1900;
+        tm.tm_mon = month - 1;
+        tm.tm_mday = day;
+        tm.tm_hour = hour;
+        tm.tm_min = minute;
+        tm.tm_sec = second;
+
+        time_t t = timegm(&tm);
+
+        if (t != -1) {
+            time->seconds = t;
+            time->nanoseconds = 0;
+            ok = true;
+        }
+        """
+
+        if not ok:
+            raise TimeError("Time convertion failed.")
+
+        return time
 
     def __str__(self) -> string:
         # ToDo: Fixed width when format string support it (or workaround).
@@ -149,3 +173,13 @@ def test_datetime_string():
 
     dt = DateTime(Time(-1, 0))
     assert str(dt) == "1969-12-31 23:59:59"
+
+@test
+def test_datetime_to_time():
+    t = DateTime(Time(0, 0)).to_time()
+    assert t.seconds == 0
+    assert t.nanoseconds == 0
+
+    t = DateTime(Time(1615130879, 0)).to_time()
+    assert t.seconds == 1615130879
+    assert t.nanoseconds == 0
