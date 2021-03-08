@@ -35,11 +35,11 @@ class DateTime:
     """
 
     year: i32
-    month: i8
-    day: i8
-    hour: i8
-    minute: i8
-    second: i8
+    month: u8
+    day: u8
+    hour: u8
+    minute: u8
+    second: u8
 
     def __init__(self, time: Time):
         """Create a DateTime object from given UTC time.
