@@ -12,12 +12,14 @@ Example
 
    from time.system import now as system_now
    from time.steady import now as steady_now
-   from time import DateTime
+   from time import LocalDateTime
+   from time import UtcDateTime
 
    def main():
-       print("system_now():", system_now())
-       print("steady_now():", steady_now())
-       print("DateTime:    ", DateTime(system_now()))
+       print("system_now():    ", system_now())
+       print("steady_now():    ", steady_now())
+       print("LocalDateTime(): ", LocalDateTime())
+       print("UtcDateTime():   ", UtcDateTime())
 
 Functions and types
 ===================
