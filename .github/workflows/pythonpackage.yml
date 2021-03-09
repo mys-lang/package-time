@@ -20,3 +20,21 @@ jobs:
     - name: Test
       run: |
         mys test
+
+  macos:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        brew install autoconf automake libtool
+        pip install mys
+    - name: Test
+      run: |
+        mys test

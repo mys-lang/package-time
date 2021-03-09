@@ -1,3 +1,5 @@
+from .system import now
+
 c"""source-before-namespace
 #include <ctime>
 """
@@ -29,8 +31,96 @@ class Time:
             self.seconds -= 1
             self.nanoseconds += 1_000_000_000
 
-class DateTime:
-    """Date and time.
+    def __add__(self, seconds: i64) -> Time:
+        time = Time(seconds, 0)
+        time += self
+
+        return time
+
+    def __sub__(self, seconds: i64) -> Time:
+        return self + -seconds
+
+class LocalDateTime:
+    """Date and time in the local time zone.
+
+    """
+
+    year: i32
+    month: u8
+    day: u8
+    hour: u8
+    minute: u8
+    second: u8
+    is_daylight_saving_time: bool
+
+    def __init__(self, time_since_epoch: Time = None):
+        """Create a local date time object from given time since epoch. Uses
+        current system time if time_since_epoch is None.
+
+        """
+
+        ok = False
+
+        c"""
+        std::time_t t;
+        std::tm *tm_p;
+
+        if (time_since_epoch) {
+            t = time_since_epoch->seconds;
+        } else {
+            std::time(&t);
+        }
+
+        tm_p = std::localtime(&t);
+
+        if (tm_p != NULL) {
+            year = 1900 + tm_p->tm_year;
+            month = tm_p->tm_mon + 1;
+            day = tm_p->tm_mday;
+            hour = tm_p->tm_hour;
+            minute = tm_p->tm_min;
+            second = tm_p->tm_sec;
+            is_daylight_saving_time = tm_p->tm_isdst == 0 ? false : true;
+            ok = true;
+        }
+        """
+
+        if not ok:
+            raise TimeError("Time convertion failed.")
+
+    def to_time_since_epoch(self) -> Time:
+        """Return this date and time as time since epoch.
+
+        """
+
+        ok = False
+        time = Time(0, 0)
+
+        c"""
+        struct tm tm;
+        tm.tm_year = year - 1900;
+        tm.tm_mon = month - 1;
+        tm.tm_mday = day;
+        tm.tm_hour = hour;
+        tm.tm_min = minute;
+        tm.tm_sec = second;
+        tm.tm_isdst = is_daylight_saving_time;
+
+        time_t t = std::mktime(&tm);
+
+        if (t != -1) {
+            time->seconds = t;
+            ok = true;
+        }
+        """
+
+        if not ok:
+            raise TimeError("Time convertion failed.")
+
+        return time
+
+class UtcDateTime:
+    """Date and time in UTC.
 
     """
 
@@ -41,8 +131,9 @@ class DateTime:
     minute: u8
     second: u8
 
-    def __init__(self, time: Time):
-        """Create a DateTime object from given UTC time.
+    def __init__(self, time_since_epoch: Time = None):
+        """Create a UTC date time object from given time since epoch. Uses
+        current system time if time_since_epoch is None.
 
         """
 
@@ -50,18 +141,23 @@ class DateTime:
 
         c"""
         std::time_t t;
-        std::tm *tm;
+        std::tm *tm_p;
 
-        t = time->seconds;
-        tm = std::gmtime(&t);
+        if (time_since_epoch) {
+            t = time_since_epoch->seconds;
+        } else {
+            std::time(&t);
+        }
 
-        if (tm != NULL) {
-            year = 1900 + tm->tm_year;
-            month = tm->tm_mon + 1;
-            day = tm->tm_mday;
-            hour = tm->tm_hour;
-            minute = tm->tm_min;
-            second = tm->tm_sec;
+        tm_p = std::gmtime(&t);
+
+        if (tm_p != NULL) {
+            year = 1900 + tm_p->tm_year;
+            month = tm_p->tm_mon + 1;
+            day = tm_p->tm_mday;
+            hour = tm_p->tm_hour;
+            minute = tm_p->tm_min;
+            second = tm_p->tm_sec;
             ok = true;
         }
         """
@@ -69,13 +165,13 @@ class DateTime:
         if not ok:
             raise TimeError("Time convertion failed.")
 
-    def to_time(self) -> Time:
-        """Create a Time object in UTC from this date and time.
+    def to_time_since_epoch(self) -> Time:
+        """Return this date and time as time since epoch.
 
         """
 
-        time = Time(0, 0)
         ok = False
+        time = Time(0, 0)
 
         c"""
         struct tm tm;
@@ -90,7 +186,6 @@ class DateTime:
 
         if (t != -1) {
             time->seconds = t;
-            time->nanoseconds = 0;
             ok = true;
         }
         """
@@ -100,11 +195,6 @@ class DateTime:
 
         return time
 
-    def __str__(self) -> string:
-        # ToDo: Fixed width when format string support it (or workaround).
-        return (f"{self.year}-{self.month}-{self.day} "
-                f"{self.hour}:{self.minute}:{self.second}")
-
 @test
 def test_time():
     time = Time(5, 1)
@@ -112,8 +202,8 @@ def test_time():
     assert time.nanoseconds == 1
 
 @test
-def test_datetime_from_time_epoch():
-    datetime = DateTime(Time(0, 0))
+def test_utc_date_time_from_time_since_epoch():
+    datetime = UtcDateTime(Time(0, 0))
     assert datetime.year == 1970
     assert datetime.month == 1
     assert datetime.day == 1
@@ -122,14 +212,42 @@ def test_datetime_from_time_epoch():
     assert datetime.second == 0
 
 @test
-def test_datetime_from_time_now():
-    datetime = DateTime(Time(1615130879, 0))
+def test_utc_date_time_from_time():
+    datetime = UtcDateTime(Time(1615130879, 0))
     assert datetime.year == 2021
     assert datetime.month == 3
     assert datetime.day == 7
     assert datetime.hour == 15
     assert datetime.minute == 27
     assert datetime.second == 59
+
+    time = datetime.to_time_since_epoch()
+    assert time.seconds == 1615130879
+    assert time.nanoseconds == 0
+
+@test
+def test_utc_date_time_now():
+    time = UtcDateTime().to_time_since_epoch()
+    assert time.seconds > now().seconds - 3600
+    assert time.seconds < now().seconds + 3600
+
+@test
+def test_local_date_time_from_time():
+    datetime = LocalDateTime(Time(1615130879, 0))
+    assert datetime.year == 2021
+    assert datetime.month == 3
+    assert datetime.minute == 27
+    assert datetime.second == 59
+
+    time = datetime.to_time_since_epoch()
+    assert time.seconds == 1615130879
+    assert time.nanoseconds == 0
+
+@test
+def test_local_date_time_now():
+    time = LocalDateTime().to_time_since_epoch()
+    assert time.seconds > now().seconds - 3600
+    assert time.seconds < now().seconds + 3600
 
 @test
 def test_add_times():
@@ -162,24 +280,3 @@ def test_subtract_times():
     t -= Time(0, 999_000_001)
     assert t.seconds == 7
     assert t.nanoseconds == 999_999_999
-
-@test
-def test_datetime_string():
-    dt = DateTime(Time(182600000, 0))
-    assert str(dt) == "1975-10-15 10:13:20"
-
-    dt = DateTime(Time(0, 0))
-    assert str(dt) == "1970-1-1 0:0:0"
-
-    dt = DateTime(Time(-1, 0))
-    assert str(dt) == "1969-12-31 23:59:59"
-
-@test
-def test_datetime_to_time():
-    t = DateTime(Time(0, 0)).to_time()
-    assert t.seconds == 0
-    assert t.nanoseconds == 0
-
-    t = DateTime(Time(1615130879, 0)).to_time()
-    assert t.seconds == 1615130879
-    assert t.nanoseconds == 0
