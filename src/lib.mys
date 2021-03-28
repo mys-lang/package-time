@@ -4,6 +4,12 @@ c"""source-before-namespace
 #include <ctime>
 """
 
+def _pad(value: string, width: i64) -> string:
+    for _ in range(width - i64(len(value))):
+        value = "0" + value
+
+    return value
+
 class TimeError(Error):
     message: string
 
@@ -119,6 +125,16 @@ class LocalDateTime:
 
         return time
 
+    def __str__(self) -> string:
+        year = _pad(str(self.year), 4)
+        month = _pad(str(self.month), 2)
+        day = _pad(str(self.day), 2)
+        hour = _pad(str(self.hour), 2)
+        minute = _pad(str(self.minute), 2)
+        second = _pad(str(self.second), 2)
+
+        return (f"{year}-{month}-{day} {hour}:{minute}:{second}")
+
 class UtcDateTime:
     """Date and time in UTC.
 
@@ -194,6 +210,16 @@ class UtcDateTime:
             raise TimeError("Time convertion failed.")
 
         return time
+
+    def __str__(self) -> string:
+        year = _pad(str(self.year), 4)
+        month = _pad(str(self.month), 2)
+        day = _pad(str(self.day), 2)
+        hour = _pad(str(self.hour), 2)
+        minute = _pad(str(self.minute), 2)
+        second = _pad(str(self.second), 2)
+
+        return (f"{year}-{month}-{day} {hour}:{minute}:{second} UTC")
 
 @test
 def test_time():
@@ -280,3 +306,11 @@ def test_subtract_times():
     t -= Time(0, 999_000_001)
     assert t.seconds == 7
     assert t.nanoseconds == 999_999_999
+
+@test
+def test_local_date_time_string():
+    assert str(LocalDateTime(Time(1615130879, 0))) == "2021-03-07 16:27:59"
+
+@test
+def test_utc_date_time_string():
+    assert str(UtcDateTime(Time(1615130879, 0))) == "2021-03-07 15:27:59 UTC"
