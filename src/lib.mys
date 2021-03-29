@@ -309,7 +309,8 @@ def test_subtract_times():
 
 @test
 def test_local_date_time_string():
-    assert str(LocalDateTime(Time(1615130879, 0))) == "2021-03-07 16:27:59"
+    assert str(LocalDateTime(Time(1615130879, 0))).starts_with("2021-03-0")
+    assert str(LocalDateTime(Time(1615130879, 0))).ends_with(":27:59")
 
 @test
 def test_utc_date_time_string():
