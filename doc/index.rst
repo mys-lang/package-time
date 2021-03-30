@@ -1,12 +1,16 @@
+|test|_
+
 About
 =====
 
-Date and time in the `Mys programming language`_.
+Date and time.
 
 Project: https://github.com/mys-lang/package-time
 
 Example
 ========
+
+Just print dates and times.
 
 .. code-block:: python
 
@@ -20,6 +24,18 @@ Example
        print("steady_now():    ", steady_now())
        print("LocalDateTime(): ", LocalDateTime())
        print("UtcDateTime():   ", UtcDateTime())
+
+Build and run.
+
+.. code-block:: text
+
+   $ mys run
+    ✔ Reading package configuration (0 seconds)
+    ✔ Building (0.22 seconds)
+   system_now():     Time(seconds=1617085725, nanoseconds=591346000)
+   steady_now():     Time(seconds=2147009, nanoseconds=643340000)
+   LocalDateTime():  2021-03-30 08:28:45
+   UtcDateTime():    2021-03-30 06:28:45 UTC
 
 Functions and types
 ===================
@@ -39,4 +55,5 @@ Steady time
 
 .. mysfile:: src/steady.mys
 
-.. _Mys programming language: https://mys.readthedocs.io/en/latest/
+.. |test| image:: https://github.com/mys-lang/package-time/actions/workflows/pythonpackage.yml/badge.svg
+.. _test: https://github.com/mys-lang/package-time/actions/workflows/pythonpackage.yml
