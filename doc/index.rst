@@ -3,7 +3,7 @@
 About
 =====
 
-Date and time.
+Date and time in the `Mys programming language`_.
 
 Project: https://github.com/mys-lang/package-time
 
@@ -57,3 +57,5 @@ Steady time
 
 .. |test| image:: https://github.com/mys-lang/package-time/actions/workflows/pythonpackage.yml/badge.svg
 .. _test: https://github.com/mys-lang/package-time/actions/workflows/pythonpackage.yml
+
+.. _Mys programming language: https://mys-lang.org
