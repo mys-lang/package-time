@@ -37,8 +37,8 @@ Build and run.
    LocalDateTime():  2021-03-30 08:28:45
    UtcDateTime():    2021-03-30 06:28:45 UTC
 
-Functions and types
-===================
+API
+===
 
 Time
 ----
