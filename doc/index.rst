@@ -29,7 +29,7 @@ Just print dates and times.
 
 Build and run.
 
-.. code-block:: text
+.. code-block:: myscon
 
    $ mys run
     ✔ Reading package configuration (0 seconds)
