@@ -14,7 +14,7 @@ Example
 
 Just print dates and times.
 
-.. code-block:: python
+.. code-block:: mys
 
    from time.system import now as system_now
    from time.steady import now as steady_now
