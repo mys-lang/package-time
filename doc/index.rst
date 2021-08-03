@@ -31,7 +31,7 @@ Build and run.
 
 .. code-block:: myscon
 
-   $ mys run
+   ❯ mys run
     ✔ Reading package configuration (0 seconds)
     ✔ Building (0.22 seconds)
    system_now():     Time(seconds=1617085725, nanoseconds=591346000)
