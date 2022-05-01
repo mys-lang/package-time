@@ -46,13 +46,6 @@ class Time:
     def __sub__(self, seconds: i64) -> Time:
         return self + -seconds
 
-    def to_float(self) -> f64:
-        """Time in seconds as a floating point number.
-
-        """
-
-        return f64(self.seconds) + f64(self.nanoseconds) / 1_000_000_000.0
-
 class LocalDateTime:
     """Date and time in the local time zone.
 
@@ -322,8 +315,3 @@ def test_local_date_time_string():
 @test
 def test_utc_date_time_string():
     assert str(UtcDateTime(Time(1615130879, 0))) == "2021-03-07 15:27:59 UTC"
-
-@test
-def test_time_to_float():
-    assert Time(5, 1).to_float() == 5.000000001
-    assert Time(-5, -1).to_float() == -5.000000001
