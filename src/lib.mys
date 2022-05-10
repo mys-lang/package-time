@@ -4,7 +4,7 @@ c"""source-before-namespace
 #include <ctime>
 """
 
-def _pad(value: string, width: i64) -> string:
+func _pad(value: string, width: i64) -> string:
     for _ in range(width - i64(len(value))):
         value = "0" + value
 
@@ -21,10 +21,10 @@ class Time:
     seconds: i64
     nanoseconds: i32
 
-    def __ne__(self, other: Time) -> bool:
+    func __ne__(self, other: Time) -> bool:
         return not (self == other)
 
-    def __gt__(self, other: Time) -> bool:
+    func __gt__(self, other: Time) -> bool:
         if self.seconds > other.seconds:
             return True
         elif self.seconds < other.seconds:
@@ -34,13 +34,13 @@ class Time:
         else:
             return False
 
-    def __ge__(self, other: Time) -> bool:
+    func __ge__(self, other: Time) -> bool:
         return self > other or self == other
 
-    def __le__(self, other: Time) -> bool:
+    func __le__(self, other: Time) -> bool:
         return self < other or self == other
 
-    def __iadd__(self, other: Time):
+    func __iadd__(self, other: Time):
         self.seconds += other.seconds
         self.nanoseconds += other.nanoseconds
 
@@ -48,7 +48,7 @@ class Time:
             self.seconds += 1
             self.nanoseconds -= 1_000_000_000
 
-    def __isub__(self, other: Time):
+    func __isub__(self, other: Time):
         self.seconds -= other.seconds
         self.nanoseconds -= other.nanoseconds
 
@@ -56,13 +56,13 @@ class Time:
             self.seconds -= 1
             self.nanoseconds += 1_000_000_000
 
-    def __add__(self, seconds: i64) -> Time:
+    func __add__(self, seconds: i64) -> Time:
         time = Time(seconds, 0)
         time += self
 
         return time
 
-    def __sub__(self, seconds: i64) -> Time:
+    func __sub__(self, seconds: i64) -> Time:
         return self + -seconds
 
 class LocalDateTime:
@@ -78,7 +78,7 @@ class LocalDateTime:
     second: u8
     is_daylight_saving_time: bool
 
-    def __init__(self, time_since_epoch: Time = None):
+    func __init__(self, time_since_epoch: Time = None):
         """Create a local date time object from given time since epoch. Uses
         current system time if time_since_epoch is None.
 
@@ -113,7 +113,7 @@ class LocalDateTime:
         if not ok:
             raise TimeError("Time convertion failed.")
 
-    def to_time_since_epoch(self) -> Time:
+    func to_time_since_epoch(self) -> Time:
         """Return this date and time as time since epoch.
 
         """
@@ -144,7 +144,7 @@ class LocalDateTime:
 
         return time
 
-    def __str__(self) -> string:
+    func __str__(self) -> string:
         year = _pad(str(self.year), 4)
         month = _pad(str(self.month), 2)
         day = _pad(str(self.day), 2)
@@ -166,7 +166,7 @@ class UtcDateTime:
     minute: u8
     second: u8
 
-    def __init__(self, time_since_epoch: Time = None):
+    func __init__(self, time_since_epoch: Time = None):
         """Create a UTC date time object from given time since epoch. Uses
         current system time if time_since_epoch is None.
 
@@ -200,7 +200,7 @@ class UtcDateTime:
         if not ok:
             raise TimeError("Time convertion failed.")
 
-    def to_time_since_epoch(self) -> Time:
+    func to_time_since_epoch(self) -> Time:
         """Return this date and time as time since epoch.
 
         """
@@ -230,7 +230,7 @@ class UtcDateTime:
 
         return time
 
-    def __str__(self) -> string:
+    func __str__(self) -> string:
         year = _pad(str(self.year), 4)
         month = _pad(str(self.month), 2)
         day = _pad(str(self.day), 2)
@@ -241,13 +241,13 @@ class UtcDateTime:
         return (f"{year}-{month}-{day} {hour}:{minute}:{second} UTC")
 
 @test
-def test_time():
+func test_time():
     time = Time(5, 1)
     assert time.seconds == 5
     assert time.nanoseconds == 1
 
 @test
-def test_utc_date_time_from_time_since_epoch():
+func test_utc_date_time_from_time_since_epoch():
     datetime = UtcDateTime(Time(0, 0))
     assert datetime.year == 1970
     assert datetime.month == 1
@@ -257,7 +257,7 @@ def test_utc_date_time_from_time_since_epoch():
     assert datetime.second == 0
 
 @test
-def test_utc_date_time_from_time():
+func test_utc_date_time_from_time():
     datetime = UtcDateTime(Time(1615130879, 0))
     assert datetime.year == 2021
     assert datetime.month == 3
@@ -271,13 +271,13 @@ def test_utc_date_time_from_time():
     assert time.nanoseconds == 0
 
 @test
-def test_utc_date_time_now():
+func test_utc_date_time_now():
     time = UtcDateTime().to_time_since_epoch()
     assert time.seconds > now().seconds - 3600
     assert time.seconds < now().seconds + 3600
 
 @test
-def test_local_date_time_from_time():
+func test_local_date_time_from_time():
     datetime = LocalDateTime(Time(1615130879, 0))
     assert datetime.year == 2021
     assert datetime.month == 3
@@ -289,13 +289,13 @@ def test_local_date_time_from_time():
     assert time.nanoseconds == 0
 
 @test
-def test_local_date_time_now():
+func test_local_date_time_now():
     time = LocalDateTime().to_time_since_epoch()
     assert time.seconds > now().seconds - 3600
     assert time.seconds < now().seconds + 3600
 
 @test
-def test_add_times():
+func test_add_times():
     t = Time(10, 0)
 
     t += Time(1, 0)
@@ -311,7 +311,7 @@ def test_add_times():
     assert t.nanoseconds == 1
 
 @test
-def test_subtract_times():
+func test_subtract_times():
     t = Time(10, 0)
 
     t -= Time(1, 0)
@@ -327,16 +327,16 @@ def test_subtract_times():
     assert t.nanoseconds == 999_999_999
 
 @test
-def test_local_date_time_string():
+func test_local_date_time_string():
     assert str(LocalDateTime(Time(1615130879, 0))).starts_with("2021-03-0")
     assert str(LocalDateTime(Time(1615130879, 0))).ends_with(":27:59")
 
 @test
-def test_utc_date_time_string():
+func test_utc_date_time_string():
     assert str(UtcDateTime(Time(1615130879, 0))) == "2021-03-07 15:27:59 UTC"
 
 @test
-def test_compare_times():
+func test_compare_times():
     assert Time(0, 0) == Time(0, 0)
     assert Time(1, 0) != Time(0, 0)
     assert Time(0, 0) < Time(1, 0)

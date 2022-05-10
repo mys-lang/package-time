@@ -21,7 +21,7 @@ Just print dates and times.
    from time import LocalDateTime
    from time import UtcDateTime
 
-   def main():
+   func main():
        print("system_now():    ", system_now())
        print("steady_now():    ", steady_now())
        print("LocalDateTime(): ", LocalDateTime())

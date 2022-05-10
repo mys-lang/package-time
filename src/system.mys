@@ -5,7 +5,7 @@ c"""source-before-namespace
 #include <ctime>
 """
 
-def now() -> Time:
+func now() -> Time:
     """Get the current time of system clock. This is commonly referred to
     as Unix time.
 
@@ -34,6 +34,6 @@ def now() -> Time:
     return Time(secs, nsecs)
 
 @test
-def test_now():
+func test_now():
     assert now().seconds >= 0
     assert now().nanoseconds >= 0
