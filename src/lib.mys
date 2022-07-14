@@ -240,14 +240,12 @@ class UtcDateTime:
 
         return (f"{year}-{month}-{day} {hour}:{minute}:{second} UTC")
 
-@test
-func test_time():
+test time():
     time = Time(5, 1)
     assert time.seconds == 5
     assert time.nanoseconds == 1
 
-@test
-func test_utc_date_time_from_time_since_epoch():
+test utc_date_time_from_time_since_epoch():
     datetime = UtcDateTime(Time(0, 0))
     assert datetime.year == 1970
     assert datetime.month == 1
@@ -256,8 +254,7 @@ func test_utc_date_time_from_time_since_epoch():
     assert datetime.minute == 0
     assert datetime.second == 0
 
-@test
-func test_utc_date_time_from_time():
+test utc_date_time_from_time():
     datetime = UtcDateTime(Time(1615130879, 0))
     assert datetime.year == 2021
     assert datetime.month == 3
@@ -270,14 +267,12 @@ func test_utc_date_time_from_time():
     assert time.seconds == 1615130879
     assert time.nanoseconds == 0
 
-@test
-func test_utc_date_time_now():
+test utc_date_time_now():
     time = UtcDateTime().to_time_since_epoch()
     assert time.seconds > now().seconds - 3600
     assert time.seconds < now().seconds + 3600
 
-@test
-func test_local_date_time_from_time():
+test local_date_time_from_time():
     datetime = LocalDateTime(Time(1615130879, 0))
     assert datetime.year == 2021
     assert datetime.month == 3
@@ -288,14 +283,12 @@ func test_local_date_time_from_time():
     assert time.seconds == 1615130879
     assert time.nanoseconds == 0
 
-@test
-func test_local_date_time_now():
+test local_date_time_now():
     time = LocalDateTime().to_time_since_epoch()
     assert time.seconds > now().seconds - 3600
     assert time.seconds < now().seconds + 3600
 
-@test
-func test_add_times():
+test add_times():
     t = Time(10, 0)
 
     t += Time(1, 0)
@@ -310,8 +303,7 @@ func test_add_times():
     assert t.seconds == 12
     assert t.nanoseconds == 1
 
-@test
-func test_subtract_times():
+test subtract_times():
     t = Time(10, 0)
 
     t -= Time(1, 0)
@@ -326,17 +318,14 @@ func test_subtract_times():
     assert t.seconds == 7
     assert t.nanoseconds == 999_999_999
 
-@test
-func test_local_date_time_string():
+test local_date_time_string():
     assert str(LocalDateTime(Time(1615130879, 0))).starts_with("2021-03-0")
     assert str(LocalDateTime(Time(1615130879, 0))).ends_with(":27:59")
 
-@test
-func test_utc_date_time_string():
+test utc_date_time_string():
     assert str(UtcDateTime(Time(1615130879, 0))) == "2021-03-07 15:27:59 UTC"
 
-@test
-func test_compare_times():
+test compare_times():
     assert Time(0, 0) == Time(0, 0)
     assert Time(1, 0) != Time(0, 0)
     assert Time(0, 0) < Time(1, 0)

@@ -33,7 +33,6 @@ func now() -> Time:
 
     return Time(secs, nsecs)
 
-@test
-func test_now():
+test now():
     assert now().seconds >= 0
     assert now().nanoseconds >= 0
