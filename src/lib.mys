@@ -5,7 +5,7 @@ c"""source-before-namespace
 """
 
 func _pad(value: string, width: i64) -> string:
-    for _ in range(width - i64(len(value))):
+    for _ in range(width - value.length()):
         value = "0" + value
 
     return value
