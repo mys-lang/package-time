@@ -78,7 +78,7 @@ class LocalDateTime:
     second: u8
     is_daylight_saving_time: bool
 
-    func __init__(self, time_since_epoch: Time = None):
+    func __init__(self, time_since_epoch: Time? = None):
         """Create a local date time object from given time since epoch. Uses
         current system time if time_since_epoch is None.
 
@@ -166,7 +166,7 @@ class UtcDateTime:
     minute: u8
     second: u8
 
-    func __init__(self, time_since_epoch: Time = None):
+    func __init__(self, time_since_epoch: Time? = None):
         """Create a UTC date time object from given time since epoch. Uses
         current system time if time_since_epoch is None.
 
