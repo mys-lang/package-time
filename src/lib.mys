@@ -21,10 +21,10 @@ class Time:
     seconds: i64
     nanoseconds: i32
 
-    func __ne__(self, other: Time) -> bool:
+    func !=(self, other: Time) -> bool:
         return not (self == other)
 
-    func __gt__(self, other: Time) -> bool:
+    func >(self, other: Time) -> bool:
         if self.seconds > other.seconds:
             return True
         elif self.seconds < other.seconds:
@@ -34,13 +34,13 @@ class Time:
         else:
             return False
 
-    func __ge__(self, other: Time) -> bool:
+    func >=(self, other: Time) -> bool:
         return self > other or self == other
 
-    func __le__(self, other: Time) -> bool:
+    func <=(self, other: Time) -> bool:
         return self < other or self == other
 
-    func __iadd__(self, other: Time):
+    func +=(self, other: Time):
         self.seconds += other.seconds
         self.nanoseconds += other.nanoseconds
 
@@ -48,7 +48,7 @@ class Time:
             self.seconds += 1
             self.nanoseconds -= 1_000_000_000
 
-    func __isub__(self, other: Time):
+    func -=(self, other: Time):
         self.seconds -= other.seconds
         self.nanoseconds -= other.nanoseconds
 
@@ -56,13 +56,13 @@ class Time:
             self.seconds -= 1
             self.nanoseconds += 1_000_000_000
 
-    func __add__(self, seconds: i64) -> Time:
+    func +(self, seconds: i64) -> Time:
         time = Time(seconds, 0)
         time += self
 
         return time
 
-    func __sub__(self, seconds: i64) -> Time:
+    func -(self, seconds: i64) -> Time:
         return self + -seconds
 
 class LocalDateTime:
